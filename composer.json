@@ -3,7 +3,7 @@
     "description": "The kafka integration for the Yii framework",
     "type": "yii2-extension",
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.6.0",
         "yiisoft/yii2": "*"
     },
     "license": "BSD-3-Clause",
