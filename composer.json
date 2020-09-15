@@ -1,0 +1,17 @@
+{
+    "name": "ltj/yii2-kafka",
+    "description": "The kafka integration for the Yii framework",
+    "type": "yii2-extension",
+    "require": {
+        "php": ">7.0",
+        "yiisoft/yii2": "~2.0.16"
+    },
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Tong Jun",
+            "email": "670166856@qq.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
