@@ -6,7 +6,7 @@
  * Time: 16:16
  */
 
-namespace common\extensions\kafka;
+namespace yii\kafka;
 
 use Yii;
 use Psr\Log\LogLevel;

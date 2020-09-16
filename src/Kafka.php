@@ -6,7 +6,7 @@
  * Time: 14:57
  */
 
-namespace common\extensions\kafka;
+namespace yii\kafka;
 
 use yii\base\Component;
 

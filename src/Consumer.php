@@ -6,7 +6,7 @@
  * Time: 11:35
  */
 
-namespace common\extensions\kafka;
+namespace yii\kafka;
 
 use Yii;
 use RdKafka\Message;

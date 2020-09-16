@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\extensions\kafka;
+namespace yii\kafka;
 
 
 use RdKafka\Message;
