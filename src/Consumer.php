@@ -9,11 +9,11 @@
 namespace yii\kafka;
 
 use Yii;
-use RdKafka\Message;
 use RdKafka\Conf;
-use RdKafka\KafkaConsumer;
+use RdKafka\Message;
 use RdKafka\Exception;
-use ReflectionClass;
+use RdKafka\KafkaConsumer;
+
 
 /**
  * Class Consumer
