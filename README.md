@@ -65,12 +65,12 @@ components => [
 
         //消费回调类配置
         'callback' => [
-            'class' => \console\service\login\LoginLogService::class,
+            'class' => \console\service\KafkaService::class,
             'businessMethod' => 'business',
         ],
 
         //broker节点配置
-        //kafkaBrokerList:192.168.0.36:9092,192.168.0.37:9092,192.168.0.38:9092
+        //kafkaBrokerList:192.168.0.1:9092,192.168.0.2:9092,192.168.0.3:9092
         'broker_list' => function(){
             return Yii::$app->params['kafkaBrokerList'];
         },
