@@ -11,7 +11,7 @@ namespace yii\kafka;
 use Yii;
 use RdKafka\Conf;
 use RdKafka\Message;
-use RdKafka\Exception;
+use Exception;
 use RdKafka\KafkaConsumer;
 
 
@@ -68,6 +68,13 @@ class Consumer extends Kafka
      * @var int $client_id
      */
     public $client_id;
+
+    /**
+     * 异常通知类（默认不发送通知）
+     * 需要实现异常发送类接口[yii\kafka\ExceptionNoticeInterface]并且在配置中注入
+     * @var null | string
+     */
+    public $exceptionNoticeClass=null;
 
     /**
      * 分区个数
@@ -131,7 +138,7 @@ class Consumer extends Kafka
      * 获取节点配置
      * @return mixed
      */
-    protected function getBrobers()
+    protected function getBrokers()
     {
         if ($this->broker_list instanceof \Closure) {
             $brokers = call_user_func($this->broker_list);
@@ -159,7 +166,7 @@ class Consumer extends Kafka
         }
 
         $conf = new Conf();
-        $conf->set('metadata.broker.list', $this->getBrobers());
+        $conf->set('metadata.broker.list', $this->getBrokers());
         $conf->set('group.id', $this->group_id);
         $conf->set('client.id', $this->client_id);
         $conf->setRebalanceCb([$this, 'rebalanceCb']);
@@ -175,22 +182,42 @@ class Consumer extends Kafka
         $this->logHandle->debug("Consume Process[$this->client_id] Started!");
 
         while (true) {
-            $message = $consumer->consume($this->consume_time_out);
-
-            if ($this->chkMessage($message)) {
-                continue;
-            }
-
-            //记录消费日志
-            $this->messageLog($message);
-
             try {
+                $message = $consumer->consume($this->consume_time_out);
+
+                if ($this->chkMessage($message)) {
+                    continue;
+                }
+
+                //记录消费日志
+                $this->messageLog($message);
+
                 $object->execute($message);
                 $consumer->commit();
+
             } catch (\Throwable $e) {
                 //捕获一切错误异常
-                $this->logHandle->error($e->getMessage());
+                $err = $e->getMessage();
+                $this->logHandle->error($err);
+                $this->exceptionNotice($err);
             }
+        }
+    }
+
+    /**
+     * 异常通知
+     *
+     * @param $message
+     */
+    public function exceptionNotice($message)
+    {
+        if($this->exceptionNoticeClass===null) {
+            return ;
+        }
+
+        $obj = Yii::createObject(['class'=>$this->exceptionNoticeClass]);
+        if($obj instanceof ExceptionNoticeInterface) {
+            $obj->send($message);
         }
     }
 
