@@ -69,6 +69,8 @@ components => [
             'businessMethod' => 'business',
         ],
 
+        'exceptionNoticeClass' => \common\components\kafka\ExceptionNotice:class
+
         //broker节点配置
         //kafkaBrokerList:192.168.0.1:9092,192.168.0.2:9092,192.168.0.3:9092
         'broker_list' => function(){
@@ -242,3 +244,44 @@ class ExampleController extends KafkaController
     }
 }
 ```
+
+异常通知类实现
+
+```php
+<?php
+
+
+namespace common\components\kafka;
+
+
+use Yii;
+use yii\base\Component;
+use yii\kafka\ExceptionNoticeInterface;
+use console\components\behaviors\exceptionNotice\EmailNoticeBehavior;
+
+/**
+ * kafka异常通知类
+ * Class ExceptionNotice
+ * @method mixed exceptionSend($message)
+ * @package common\components\kafka
+ */
+class ExceptionNotice extends Component implements ExceptionNoticeInterface
+{
+    public function behaviors()
+    {
+        return [
+            [
+                'class'=>EmailNoticeBehavior::class,
+                'title' => '9K平台kafka消费队列异常',
+            ]
+        ];
+    }
+
+    public function send($message)
+    {
+        $this->exceptionSend($message);
+    }
+}
+```
+
+例子中的异常通知类实现是通过行为的模式注入到异常通知类中，灵活变更通知模式
